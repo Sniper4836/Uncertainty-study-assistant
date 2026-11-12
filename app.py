@@ -24,6 +24,7 @@ st.caption(
 # -----------------------------------
 
 knowledge_base = {
+
     "active recall": {
         "answer": (
             "Active recall is a study technique where you actively "
@@ -33,6 +34,14 @@ knowledge_base = {
         "uncertainty": "Low",
         "explanation": (
             "Your question matches a topic in my knowledge base."
+        ),
+        "further_explanation": (
+            "Active recall works by making you retrieve information "
+            "from memory rather than simply reading it again. "
+            "For example, after studying a lecture, close your notes "
+            "and try to write down everything you can remember. "
+            "You can then compare your answer with your notes "
+            "to identify gaps in your understanding."
         )
     },
 
@@ -45,6 +54,14 @@ knowledge_base = {
         "uncertainty": "Low",
         "explanation": (
             "Your question matches a topic in my knowledge base."
+        ),
+        "further_explanation": (
+            "Instead of studying the same information repeatedly "
+            "in one session, spaced repetition spreads revision "
+            "across multiple sessions. For example, you might review "
+            "a topic today, again tomorrow, then after several days "
+            "and eventually after a week. This helps you revisit "
+            "information over time."
         )
     },
 
@@ -56,6 +73,13 @@ knowledge_base = {
         "uncertainty": "Low",
         "explanation": (
             "Your question matches a topic in my knowledge base."
+        ),
+        "further_explanation": (
+            "A typical Pomodoro session involves studying for "
+            "25 minutes without distractions, followed by a "
+            "5-minute break. After completing four sessions, "
+            "you take a longer break. The idea is to divide "
+            "large tasks into manageable periods of focused work."
         )
     }
 }
@@ -80,7 +104,8 @@ def process_question(question):
             "uncertainty": "Medium",
             "explanation": (
                 "Your question is missing the referencing style."
-            )
+            ),
+            "further_explanation": None
         }
 
     for topic, information in knowledge_base.items():
@@ -102,6 +127,13 @@ def process_question(question):
         "uncertainty": "High",
         "explanation": (
             "This question does not match any topic in my knowledge base."
+        ),
+        "further_explanation": (
+            "My knowledge base currently contains information about "
+            "active recall, spaced repetition and the Pomodoro Technique. "
+            "I cannot confidently answer questions outside these topics. "
+            "You could try asking about one of these topics or consult "
+            "your lecture materials for information about this subject."
         )
     }
 
@@ -171,19 +203,39 @@ if "pending_clarification" not in st.session_state:
 # 6. DISPLAY CHAT HISTORY
 # -----------------------------------
 
-for message in st.session_state.messages:
+for i, message in enumerate(st.session_state.messages):
 
     with st.chat_message(message["role"]):
 
         if message["role"] == "assistant":
 
-            # Display newer structured messages
             if "uncertainty" in message:
 
                 display_assistant_message(message)
 
+                # Show the further explanation button
+                if message.get("further_explanation"):
+
+                    if st.button(
+                        "Explain further",
+                        key=f"explain_{i}"
+                    ):
+
+                        st.session_state.messages.append({
+                            "role": "assistant",
+                            "content": message["further_explanation"],
+                            "uncertainty": message["uncertainty"],
+                            "explanation": (
+                                "This is additional information based "
+                                "on the same knowledge base entry."
+                            ),
+                            "further_explanation": None
+                        })
+
+                        st.rerun()
+
             else:
-                # Support messages from the earlier version
+
                 st.markdown(message["content"])
 
         else:
@@ -225,7 +277,8 @@ if st.session_state.pending_clarification:
                 "explanation": (
                     "The referencing style is now known, but this is "
                     "general guidance rather than a verified reference."
-                )
+                ),
+                "further_explanation": None
             })
 
             st.session_state.pending_clarification = False
@@ -255,7 +308,8 @@ if question:
         "role": "assistant",
         "content": result["answer"],
         "uncertainty": result["uncertainty"],
-        "explanation": result["explanation"]
+        "explanation": result["explanation"],
+        "further_explanation": result["further_explanation"]
     })
 
     if result["type"] == "clarification":
