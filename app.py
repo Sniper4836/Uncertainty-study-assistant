@@ -13,6 +13,12 @@ st.write(
     "I will answer where possible and explain when I am uncertain."
 )
 
+st.caption(
+    "This prototype uses simulated uncertainty categories, "
+    "not genuine AI confidence scores."
+)
+
+
 # -----------------------------------
 # 1. PREDEFINED KNOWLEDGE BASE
 # -----------------------------------
@@ -63,7 +69,6 @@ def process_question(question):
 
     question = question.lower()
 
-    # Check whether referencing clarification is needed
     if "referenc" in question or "cit" in question:
 
         return {
@@ -78,7 +83,6 @@ def process_question(question):
             )
         }
 
-    # Search the knowledge base
     for topic, information in knowledge_base.items():
 
         if topic in question:
@@ -88,7 +92,6 @@ def process_question(question):
                 **information
             }
 
-    # If no matching topic is found
     return {
         "type": "answer",
         "answer": (
@@ -126,7 +129,35 @@ def process_clarification(style):
 
 
 # -----------------------------------
-# 4. INITIALISE SESSION STATE
+# 4. DISPLAY ASSISTANT RESPONSES
+# -----------------------------------
+
+def display_assistant_message(message):
+
+    st.markdown(message["content"])
+
+    uncertainty = message.get("uncertainty", "High")
+    explanation = message.get("explanation", "")
+
+    if uncertainty == "Low":
+
+        st.success("🟢 LOW UNCERTAINTY")
+
+    elif uncertainty == "Medium":
+
+        st.warning("🟠 MEDIUM UNCERTAINTY")
+
+    else:
+
+        st.error("🔴 HIGH UNCERTAINTY")
+
+    if explanation:
+
+        st.caption("Why? " + explanation)
+
+
+# -----------------------------------
+# 5. INITIALISE SESSION STATE
 # -----------------------------------
 
 if "messages" not in st.session_state:
@@ -137,17 +168,31 @@ if "pending_clarification" not in st.session_state:
 
 
 # -----------------------------------
-# 5. DISPLAY CHAT HISTORY
+# 6. DISPLAY CHAT HISTORY
 # -----------------------------------
 
 for message in st.session_state.messages:
 
     with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+
+        if message["role"] == "assistant":
+
+            # Display newer structured messages
+            if "uncertainty" in message:
+
+                display_assistant_message(message)
+
+            else:
+                # Support messages from the earlier version
+                st.markdown(message["content"])
+
+        else:
+
+            st.markdown(message["content"])
 
 
 # -----------------------------------
-# 6. HANDLE CLARIFICATION INTERACTION
+# 7. HANDLE CLARIFICATION INTERACTION
 # -----------------------------------
 
 if st.session_state.pending_clarification:
@@ -175,13 +220,11 @@ if st.session_state.pending_clarification:
 
             st.session_state.messages.append({
                 "role": "assistant",
-                "content": (
-                    response
-                    + "\n\n**Uncertainty: Low**"
-                    + "\n\n**Why?** "
-                    + "The user has provided the missing referencing style. "
-                    + "The response is still general guidance, not a "
-                    + "verified reference-formatting result."
+                "content": response,
+                "uncertainty": "Medium",
+                "explanation": (
+                    "The referencing style is now known, but this is "
+                    "general guidance rather than a verified reference."
                 )
             })
 
@@ -191,7 +234,7 @@ if st.session_state.pending_clarification:
 
 
 # -----------------------------------
-# 7. HANDLE NEW USER QUESTIONS
+# 8. HANDLE NEW USER QUESTIONS
 # -----------------------------------
 
 question = st.chat_input(
@@ -201,7 +244,6 @@ question = st.chat_input(
 
 if question:
 
-    # Store and display the user question
     st.session_state.messages.append({
         "role": "user",
         "content": question
@@ -209,19 +251,13 @@ if question:
 
     result = process_question(question)
 
-    # Prepare the assistant response
-    response = (
-        f'{result["answer"]}'
-        f'\n\n**Uncertainty: {result["uncertainty"]}**'
-        f'\n\n**Why?** {result["explanation"]}'
-    )
-
     st.session_state.messages.append({
         "role": "assistant",
-        "content": response
+        "content": result["answer"],
+        "uncertainty": result["uncertainty"],
+        "explanation": result["explanation"]
     })
 
-    # If clarification is required, activate the interaction
     if result["type"] == "clarification":
 
         st.session_state.pending_clarification = True
