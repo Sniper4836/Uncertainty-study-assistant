@@ -1,69 +1,69 @@
 # Uncertainty-Aware Study Assistant
 
-**README prose word count: approximately 190 words (excluding code and headings).**
+**README prose word count: approximately 270 words (excluding headings, code and file names).**
 
-## 1. Project Overview
+## Project Overview
 
-The Uncertainty-Aware Study Assistant is a prototype chatbot designed to explore how AI systems communicate uncertainty when answering user questions.
+The Uncertainty-Aware Study Assistant is an interactive chatbot prototype designed to explore how AI systems can communicate uncertainty and help users make informed decisions about whether to trust an answer.
 
-The project focuses on helping users understand when an answer may be reliable, when more information is needed, and when an answer should be checked against another source.
+The system responds to study-related questions using a predefined knowledge base and communicates uncertainty through three categories: Low, Medium and High.
 
-The application currently uses predefined responses and rule-based keyword matching to simulate different levels of uncertainty.
+## Project Status
 
-## 2. Project Status
+**Status: Functional prototype developed.**
 
-**Current status: Initial prototype developed.**
+The prototype includes the following features:
 
-The current version includes:
-- A web-based chat interface.
-- A small predefined knowledge base covering study techniques.
-- Low, medium and high uncertainty categories.
-- Explanations of why the system assigns each uncertainty level.
-- A fallback response for questions outside its knowledge base.
+- **Uncertainty indicators:** Displays colour-coded low, medium and high uncertainty categories.
+- **Clarification:** Requests additional information when a question is ambiguous.
+- **Further explanation:** Allows users to request more detailed information about an answer.
+- **Challenge responses:** Allows users to challenge an answer and receive advice about independently verifying the information.
+- **Chat interface:** Maintains conversation history during the session.
 
-Further improvements are planned, including more effective clarification interactions and additional user feedback and verification options.
+## Technology Stack
 
-## 3. Technology Stack
+- Python
+- Streamlit
+- Python IDLE
+- GitHub
 
-- **Python:** Main programming language.
-- **Streamlit:** Framework used to create the interactive web application.
-- **Python IDLE:** Used to write and edit the Python code.
-- **GitHub:** Used to store the source code and document project development.
+## How to Run
 
-## 4. How to Run the Application
+1. Install Python.
+2. Install Streamlit using:
 
-Python must be installed on your computer.
+   `python -m pip install streamlit`
 
-Install Streamlit using:
+3. Navigate to the project folder.
+4. Run the application using:
 
-```bash
-python -m pip install streamlit
-```
+   `python -m streamlit run app.py`
 
-Navigate to the project folder in Command Prompt and run:
+5. Open the local URL provided by Streamlit in your browser.
 
-```bash
-python -m streamlit run app.py
-```
+## System Design and Limitations
 
-The application should open in your web browser.
+The application uses Python-based keyword matching to identify questions and retrieve predefined responses from a small knowledge base.
 
-## 5. Development Record
+Uncertainty categories are assigned using predefined rules. They do not represent genuine AI confidence scores or a trained machine learning model.
 
-The initial development stage involved creating a basic chatbot interface, a small knowledge base and a rule-based uncertainty mechanism.
+The system cannot independently verify factual accuracy, and its responses are limited to the information included in its knowledge base.
 
-The prototype was tested using questions designed to produce low, medium and high uncertainty responses.
+## Development Record
 
-Further development and testing will be documented as the project progresses.
+The project was developed incrementally, beginning with a basic chatbot and predefined knowledge base. Further development introduced uncertainty indicators, clarification requests, expandable explanations and user challenges.
 
-## 6. AI Assistance
+The application was tested using example questions to check its responses and interactive functionality.
 
-ChatGPT was used to support project planning, explain Python and Streamlit concepts, and assist with the initial application code.
+## AI Assistance
 
-The generated code was added to the project and tested by running the application and trying example questions. AI-generated suggestions and code will be reviewed, tested and modified during further development.
+ChatGPT was used to support project planning, explain Python and Streamlit functionality, and assist with developing and improving sections of the application code.
 
-## 7. Important Limitations
+Generated code and suggestions were reviewed, implemented and tested during development. The final implementation was checked through interaction with the application.
 
-This is a simulated uncertainty-aware system, not a chatbot with a trained machine-learning model or genuine confidence estimation. Its responses are determined by predefined rules and keyword matching. It does not independently verify factual information.
+## Repository Contents
 
-These limitations will be considered when evaluating the prototype.
+- `app.py` – Main application code.
+- `requirements.txt` – Python dependencies.
+- `.gitignore` – Files excluded from version control.
+- `README.md` – Project documentation.
