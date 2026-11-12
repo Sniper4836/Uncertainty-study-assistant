@@ -1,6 +1,6 @@
 # Uncertainty-Aware Study Assistant
 
-**README prose word count: approximately 270 words (excluding headings, code and file names).**
+**README prose word count: approximately 275 words (excluding headings, code and file names).**
 
 ## Project Overview
 
@@ -60,6 +60,8 @@ The application was tested using example questions to check its responses and in
 ChatGPT was used to support project planning, explain Python and Streamlit functionality, and assist with developing and improving sections of the application code.
 
 Generated code and suggestions were reviewed, implemented and tested during development. The final implementation was checked through interaction with the application.
+
+AI was not used for any planning or writing of the final report.
 
 ## Repository Contents
 
