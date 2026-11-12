@@ -214,25 +214,69 @@ for i, message in enumerate(st.session_state.messages):
                 display_assistant_message(message)
 
                 # Show the further explanation button
-                if message.get("further_explanation"):
+                
+            # Show the further explanation button
+            if message.get("further_explanation"):
 
-                    if st.button(
-                        "Explain further",
-                        key=f"explain_{i}"
-                    ):
+                if st.button(
+                    "Explain further",
+                    key=f"explain_{i}"
+                ):
 
-                        st.session_state.messages.append({
-                            "role": "assistant",
-                            "content": message["further_explanation"],
-                            "uncertainty": message["uncertainty"],
-                            "explanation": (
-                                "This is additional information based "
-                                "on the same knowledge base entry."
-                            ),
-                            "further_explanation": None
-                        })
+                    st.session_state.messages.append({
+                        "role": "assistant",
+                        "content": message["further_explanation"],
+                        "uncertainty": message["uncertainty"],
+                        "explanation": (
+                            "This is additional information based "
+                            "on the same knowledge base entry."
+                        ),
+                        "further_explanation": None,
+                        "allow_challenge": True
+                    })
 
-                        st.rerun()
+                    st.rerun()
+
+
+            # Show the challenge response button
+            if message.get("allow_challenge", True):
+
+                if st.button(
+                    "I think this answer is incorrect",
+                    key=f"challenge_{i}"
+                ):
+
+                    # Record the user's challenge
+                    st.session_state.messages.append({
+                        "role": "user",
+                        "content": "I think this answer is incorrect."
+                    })
+
+                    # Generate the assistant's response
+                    st.session_state.messages.append({
+                        "role": "assistant",
+                        "content": (
+                            "Thank you for challenging my response. "
+                            "It is possible that my answer is incorrect "
+                            "or incomplete.\n\n"
+                            "I cannot independently verify whether my "
+                            "original answer was factually correct. "
+                            "I recommend checking your lecture notes, "
+                            "course materials or another trusted source "
+                            "before relying on this information."
+                        ),
+                        "uncertainty": "Medium",
+                        "explanation": (
+                            "The user has challenged the answer. "
+                            "This does not prove the original answer was wrong, "
+                            "but it highlights the need for verification."
+                        ),
+                        "further_explanation": None,
+                        "allow_challenge": False
+                    })
+
+                    st.rerun()
+
 
             else:
 
